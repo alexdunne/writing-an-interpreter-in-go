@@ -26,8 +26,11 @@ func New(input string) *Lexer {
 	return l
 }
 
+// NextToken converts the current character into a Token
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
+
+	l.skipWhitespace()
 
 	switch l.ch {
 	case '=':
@@ -49,6 +52,25 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+	default:
+		// check if the character is a valid letter in which case we're
+		// dealing with an identifier
+		if isLetter(l.ch) {
+			tok.Literal = l.readIdentifier()
+			tok.Type = token.LookupIdent(tok.Literal)
+			return tok
+		}
+
+		// check if the character is a digit in which case we're dealing
+		// with a number
+		if isDigit(l.ch) {
+			tok.Literal = l.readNumber()
+			tok.Type = token.INT
+			return tok
+		}
+
+		// we don't know how to handle this character so mark it as such
+		tok = newToken(token.ILLEGAL, l.ch)
 	}
 
 	l.readChar()
@@ -72,4 +94,46 @@ func (l *Lexer) readChar() {
 	l.position = l.readPosition
 
 	l.readPosition++
+}
+
+// readIdentifier iterates through the input from the current position
+// until it meets an unsupport indentifier character. The values between the
+// start position and end position are returned as the identifier value
+func (l *Lexer) readIdentifier() string {
+	pos := l.position
+
+	for isLetter(l.ch) {
+		l.readChar()
+	}
+
+	return l.input[pos:l.position]
+}
+
+// readNumber iterates through the input from the current position
+// until it meets a non digit character. The values between the
+// start position and end position are returned as the number value
+func (l *Lexer) readNumber() string {
+	pos := l.position
+
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+
+	return l.input[pos:l.position]
+}
+
+// skipWhitespace iterates through the input until it meets a
+// none whitespace character
+func (l *Lexer) skipWhitespace() {
+	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
+	}
+}
+
+func isLetter(ch byte) bool {
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }
