@@ -39,7 +39,7 @@ func TestNextToken(t *testing.T) {
 			   let add = fn(x, y) {
 				 x + y;
 			};
-			   let result = add(five, ten);
+			let result = add(five, ten);
 			`,
 			expectedTokens: []expectedToken{
 				{tokenType: token.LET, literal: "let"},
@@ -79,6 +79,24 @@ func TestNextToken(t *testing.T) {
 				{tokenType: token.RPAREN, literal: ")"},
 				{tokenType: token.SEMICOLON, literal: ";"},
 				{tokenType: token.EOF, literal: ""},
+			},
+		},
+		{
+			name: "math symbols",
+			input: `!-/*5;
+			5 < 10 > 5;`,
+			expectedTokens: []expectedToken{
+				{tokenType: token.BANG, literal: "!"},
+				{tokenType: token.MINUS, literal: "-"},
+				{tokenType: token.SLASH, literal: "/"},
+				{tokenType: token.ASTERISK, literal: "*"},
+				{tokenType: token.INT, literal: "5"},
+				{tokenType: token.SEMICOLON, literal: ";"},
+				{tokenType: token.INT, literal: "5"},
+				{tokenType: token.LT, literal: "<"},
+				{tokenType: token.INT, literal: "10"},
+				{tokenType: token.GT, literal: ">"},
+				{tokenType: token.INT, literal: "5"},
 			},
 		},
 	}
