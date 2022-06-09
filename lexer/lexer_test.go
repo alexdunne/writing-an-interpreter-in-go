@@ -124,6 +124,19 @@ func TestNextToken(t *testing.T) {
 				{tokenType: token.RBRACE, literal: "}"},
 			},
 		},
+		{
+			name: "two character tokens",
+			input: `10 == 10
+			10 != 9`,
+			expectedTokens: []expectedToken{
+				{tokenType: token.INT, literal: "10"},
+				{tokenType: token.EQ, literal: "=="},
+				{tokenType: token.INT, literal: "10"},
+				{tokenType: token.INT, literal: "10"},
+				{tokenType: token.NOT_EQ, literal: "!="},
+				{tokenType: token.INT, literal: "9"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -138,7 +151,7 @@ func TestNextToken(t *testing.T) {
 				}
 
 				if tok.Literal != expectedToken.literal {
-					t.Fatalf("expected literal %s, got %s", expectedToken.literal, tok.Type)
+					t.Fatalf("expected literal %s, got %s", expectedToken.literal, tok.Literal)
 				}
 			}
 

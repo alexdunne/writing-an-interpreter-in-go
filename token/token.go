@@ -34,6 +34,9 @@ const (
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
+
+	EQ     = "=="
+	NOT_EQ = "!="
 )
 
 // keywords defines a mapping of literal string values to their token type
