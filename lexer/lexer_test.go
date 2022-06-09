@@ -99,6 +99,31 @@ func TestNextToken(t *testing.T) {
 				{tokenType: token.INT, literal: "5"},
 			},
 		},
+		{
+			name: "if and booleans",
+			input: `if (5 < 10) {
+				return true
+			} else {
+				return false
+			}`,
+			expectedTokens: []expectedToken{
+				{tokenType: token.IF, literal: "if"},
+				{tokenType: token.LPAREN, literal: "("},
+				{tokenType: token.INT, literal: "5"},
+				{tokenType: token.LT, literal: "<"},
+				{tokenType: token.INT, literal: "10"},
+				{tokenType: token.RPAREN, literal: ")"},
+				{tokenType: token.LBRACE, literal: "{"},
+				{tokenType: token.RETURN, literal: "return"},
+				{tokenType: token.TRUE, literal: "true"},
+				{tokenType: token.RBRACE, literal: "}"},
+				{tokenType: token.ELSE, literal: "else"},
+				{tokenType: token.LBRACE, literal: "{"},
+				{tokenType: token.RETURN, literal: "return"},
+				{tokenType: token.FALSE, literal: "false"},
+				{tokenType: token.RBRACE, literal: "}"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
